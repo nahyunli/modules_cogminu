@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from os import sep
 import numpy as np
+from scipy.interpolate import interp1d
 
 def pd_print_all():
     pd.set_option('display.max_columns', None)
@@ -63,37 +64,29 @@ def get_multi_value2 (index1, index_val1, index2, index_val2, df):
     return a
 
 def get_multi_value3 (index1, index_val1, index2, index_val2,  index3, index_val3, df):
-    a = df.loc[(df[index1] == index_val1) & (df[index2] == index_val2)  & (df[index3] == index_val3)]
+    a = df.loc[(df[index1] == index_val1) & (df[index2] == index_val2) & (df[index3] == index_val3)]
     return a
 
 def check_remove(before, after):
     num_removed = len(before) - len(after)
     print("removing " + str(num_removed))
 
- #     return empty
 def myMAD(x):
     med = np.median(x)
     x = abs(x - med)
     MAD = np.median(x)
     return MAD
     
+def gb(iv, dv, df):
+    df = df.groupby(iv)[dv].mean()
+    df = df.to_frame()
+    df = df.reset_index()
+    return df
  
-    
- 
-    
- 
-    
- 
-    
- 
-    
- 
-    
- 
-    
- 
-    
- 
-    
- 
-    
+def interpolate_time(t, x, y):
+    first = t[0]
+    last = t[-1]
+    new_t = np.arange(first, last, 1).tolist()
+    x_interp = interp1d(new_t, x, kind='linear')
+    y_interp = interp1d(new_t, y, kind='linear')
+
